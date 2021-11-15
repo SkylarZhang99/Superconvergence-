@@ -54,3 +54,5 @@ temp2=h*T2*w;
 C=[h/3 h/6;h/6 h/3];
 S=C\[temp1'; temp2'];
 % plot(node,node.*(1-node)/2,'--','LineWidth',2)
+
+% This is Seulip's change.
