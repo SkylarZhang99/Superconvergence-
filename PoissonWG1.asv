@@ -1,6 +1,6 @@
 function [errEn,errL2] = PoissonWG1(Num)
 % Parameters
-
+Num=
 NO = Num+1; % Number of points
 h = 1/Num;
 

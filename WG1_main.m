@@ -1,9 +1,10 @@
+%code that shows convergence order
 clear all
 clc
 
-IterNum = 6;
+IterNum = 6; 
 I = (1:IterNum)';
-Num = 10*2.^(I-1);
+Num = 10*2.^(I-1);  %10,20,40,80,160,320 intervals
 
 errEn = zeros(IterNum,1);
 errL2 = zeros(IterNum,1);
