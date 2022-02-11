@@ -55,7 +55,7 @@ RHS = b-A*d;  %dirichlet boundary condition
 % ufree = A(free,free)\b(free);
 u = zeros(DoFs,1);
 u(2*Num+1)=alpha;
-u(end)=beta;
+
 u(free) = A(free,free)\RHS(free);  %solution with dirichlet boundary condition
 % u(bc) = [0; 0];
 
