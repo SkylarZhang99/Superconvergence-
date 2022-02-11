@@ -1,7 +1,7 @@
 clear all
 %format short e
 % Parameters
-Num = 2; % Number of intervals
+Num = 8; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 
@@ -13,8 +13,8 @@ right=node(2:end);
 DoFs = 2*Num+NO;  %number of base functions
 bc = 2*Num+[1,NO];  %boundary 
 free = setdiff([1:DoFs],bc);   
-alpha=0; %neumann boundary condition 
-beta=0;  %nuemann boundary condition 
+alpha=pi; %neumann boundary condition 
+beta=-pi;  %nuemann boundary condition 
 
 
 G = h*[1/5 1/4 1/3; 1/4 1/3 1/2; 1/3 1/2 1];

@@ -14,7 +14,7 @@ DoFs = 2*Num+NO;  %number of base functions
 bc = 2*Num+[1,NO];  %boundary 
 free = setdiff([1:DoFs],bc);   
 alpha=0; %robin boundary condition  u(0)=alpha
-beta=0;  %robin boundary condition  u(1)+u'(1)=beta
+beta=-pi;  %robin boundary condition  u(1)+u'(1)=beta
 
 
 G = h*[1/5 1/4 1/3; 1/4 1/3 1/2; 1/3 1/2 1];
