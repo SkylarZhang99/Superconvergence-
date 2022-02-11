@@ -1,7 +1,7 @@
 clear all
 %format short e
 % Parameters
-Num = 8; % Number of intervals
+Num = 16; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 
@@ -13,8 +13,8 @@ right=node(2:end);
 DoFs = 2*Num+NO;  %number of base functions
 bc = 2*Num+[1,NO];  %boundary 
 free = setdiff([1:DoFs],bc);   
-alpha=pi; %neumann boundary condition 
-beta=-pi;  %nuemann boundary condition 
+alpha=0; %neumann boundary condition 
+beta=1;  %nuemann boundary condition 
 
 
 G = h*[1/5 1/4 1/3; 1/4 1/3 1/2; 1/3 1/2 1];
@@ -46,15 +46,15 @@ q = repmat(node(:,1:Num),nq,1)' + h/2 + h/2*repmat(q',Num,1);
 
 
 % computing the right hand side 
-f=@(x) pi^2*sin(pi*x);  %f(q) col is qua points row is intervals 
-% f=@(x) -(6*x-2);
+%f=@(x) pi^2*sin(pi*x);  %f(q) col is qua points row is intervals 
+f=@(x) -(6*x-2);
 %f=@(x) -(12*x.^2-12*x+2);
 F=h/2*phi*(f(q)'.*w); % check h/2
 b(1:2*Num)=F(:);
-RHS = b-n;  %neumann boundary condition
+RHS = b+n;  %neumann boundary condition
 % ufree = A(free,free)\b(free);
 u = zeros(DoFs,1);
-u(end)=1; %fixing one coefficient to guarantee linear independency
+%u(end)=1; %fixing one coefficient to guarantee linear independency
 u(free) = A(free,free)\RHS(free);  %solution with neumann boundary condition
 % u(bc) = [0; 0];
 
@@ -63,8 +63,8 @@ hold on
 plot([node(elem(:,1))',node(elem(:,2))']',[u(2:2:2*Num),u(1:2:2*Num)]','-','LineWidth',2);% u0 %made changes here: changed [u(1:2:2*Num),u(2:2:2*Num)]'to [u(2:2:2*Num),u(1:2:2*Num)]'
 %% 
 % exactu=@(x) x.*x.*(x-1);
- exactu=@(x) sin(pi*x);
-%exactu=@(x) x.^2.*(x-1).^2;
+ %exactu=@(x) sin(pi*x);
+exactu=@(x) x.^2.*(x-1).^2;
 exactu(q);
 eta2=(repmat(right',1,nq)-q)/h;
 eta1=ones(Num,nq)-eta2;
