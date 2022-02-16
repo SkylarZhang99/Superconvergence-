@@ -1,4 +1,41 @@
 clear all
+
+% Define problem
+TestProblem = 5;
+switch TestProblem
+    case 1
+        exactu = @(x)x.*x.*(x-1);
+        f = @(x)-(6*x-2);
+        alpha = 0;
+        beta = 1;
+        xn = 0;
+    case 2
+        exactu = @(x)sin(pi*x);
+        f=@(x)pi^2*sin(pi*x);
+        alpha = pi;
+        beta = -pi;
+        xn = 0;
+    case 3 
+        exactu = @(x)x.^2.*(x-1).^2;
+        f=@(x) -(12*x.^2-12*x+2);
+        alpha = 0;
+        beta = 0;
+        xn = 0;
+    case 4 
+        exactu = @(x)cos(pi*x); 
+        f=@(x)pi^2*cos(pi*x);
+        alpha = 0;
+        beta = 0;
+        xn = -1;
+    case 5 
+        exactu = @(x)x.^3+x+1;
+        f = @(x) -6*x;
+        alpha = 1;
+        beta = 4;
+        xn = 3;
+
+end
+
 %format short e
 % Parameters
 Num = 16; % Number of intervals
@@ -11,10 +48,10 @@ elem(:,2) = [1:Num]+1;
 node = 0:1/Num:1;
 right=node(2:end); 
 DoFs = 2*Num+NO;  %number of base functions
-bc = 2*Num+[1,NO];  %boundary 
+bc = 2*Num+[NO];  %boundary 
 free = setdiff([1:DoFs],bc);   
-alpha=0; %neumann boundary condition 
-beta=1;  %nuemann boundary condition 
+%alpha=0; %neumann boundary condition 
+%beta=1;  %nuemann boundary condition 
 
 
 G = h*[1/5 1/4 1/3; 1/4 1/3 1/2; 1/3 1/2 1];
@@ -28,8 +65,8 @@ A = sparse(DoFs,DoFs);
 M = sparse(DoFs,DoFs); 
 b = sparse(DoFs,1);
 n = sparse (DoFs,1); 
-n(2*Num+1,1)= -alpha;   %neumann boundary condition 
-n(end,1) = beta;       %neumann boundary condition
+n(2*Num+1)= -alpha;   %neumann boundary condition 
+n(end) = beta;       %neumann boundary condition
 for i = 1:Num
     Index = [2*i-1,2*i,2*Num+elem(i,:)];
 %     A = A + sparse(ones(4,1)*Index,Index'*ones(1,4),At,DoFs,DoFs);
@@ -39,7 +76,7 @@ for i = 1:Num
      M = M + sparse(repmat(Index,4,1),repmat(Index',1,4),Mt,DoFs,DoFs);
 end
 
-nq = 7;
+nq = 20;
 [q,w] = lgwt(nq,-1,1);
 phi = [(1+q)'/2;(1-q)'/2];
 q = repmat(node(:,1:Num),nq,1)' + h/2 + h/2*repmat(q',Num,1);
@@ -47,14 +84,18 @@ q = repmat(node(:,1:Num),nq,1)' + h/2 + h/2*repmat(q',Num,1);
 
 % computing the right hand side 
 %f=@(x) pi^2*sin(pi*x);  %f(q) col is qua points row is intervals 
-f=@(x) -(6*x-2);
+%f=@(x) -(6*x-2);
 %f=@(x) -(12*x.^2-12*x+2);
 F=h/2*phi*(f(q)'.*w); % check h/2
 b(1:2*Num)=F(:);
-RHS = b+n;  %neumann boundary condition
+
+ %neumann boundary condition
 % ufree = A(free,free)\b(free);
 u = zeros(DoFs,1);
-%u(end)=1; %fixing one coefficient to guarantee linear independency
+u(end)=xn; %fixing one coefficient to guarantee linear independency
+Au = zeros(DoFs,1);
+Au = u(end)*A(:,end);
+RHS = b+n-Au; 
 u(free) = A(free,free)\RHS(free);  %solution with neumann boundary condition
 % u(bc) = [0; 0];
 
@@ -64,7 +105,7 @@ plot([node(elem(:,1))',node(elem(:,2))']',[u(2:2:2*Num),u(1:2:2*Num)]','-','Line
 %% 
 % exactu=@(x) x.*x.*(x-1);
  %exactu=@(x) sin(pi*x);
-exactu=@(x) x.^2.*(x-1).^2;
+%exactu=@(x) x.^2.*(x-1).^2;
 exactu(q);
 eta2=(repmat(right',1,nq)-q)/h;
 eta1=ones(Num,nq)-eta2;
@@ -78,7 +119,7 @@ Qu=zeros(DoFs,1);
 Qu(1:2*Num)=S(:);
 piu=S(:);
 u0=u(1:2*Num);
-Qu(2*Num+2:DoFs-1)=exactu(node(2:end-1));
+Qu(2*Num+1:DoFs)=exactu(node(1:end));
 errEn=sqrt((u-Qu)'*A*(u-Qu)); %energy norm need to check order of A , test N-2,4,8,16,32
 errL2=sqrt((u-Qu)'*M*(u-Qu));
 [errEn errL2]
