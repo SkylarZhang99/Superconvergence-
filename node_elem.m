@@ -1,5 +1,4 @@
-
-function A = assemblingstandard(node,elem)
+clear all
 Num = 4; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
@@ -22,13 +21,3 @@ elem (1:Num^2,3) = n+Num+2;
 elem (Num^2+1:end,2) = n+Num+2;    
 elem (Num^2+1:end,3) = n+1;          
 elem = full(elem);
-N=size(node,1); NT=size(elem,1);
-A=zeros(N,N); %A = sparse(N,N);
-for t=1:NT
-     At=locatstiffness(node(elem(t,:),:));
-     for i=1:3
-         for j=1:3
-        A(elem(t,i),elem(t,j))=A(elem(t,i),elem(t,j))+At(i,j);
-         end
-     end
-end
