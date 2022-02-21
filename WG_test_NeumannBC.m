@@ -1,7 +1,7 @@
 clear all
 
 % Define problem
-TestProblem = 5;
+TestProblem = 2;
 switch TestProblem
     case 1
         exactu = @(x)x.*x.*(x-1);
@@ -38,7 +38,7 @@ end
 
 %format short e
 % Parameters
-Num = 16; % Number of intervals
+Num = 8; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 

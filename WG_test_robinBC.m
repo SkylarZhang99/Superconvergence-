@@ -1,7 +1,7 @@
 clear all
 
 % Define problem
-TestProblem = 3;
+TestProblem = 2;
 switch TestProblem
      case 1
         exactu = @(x)x.*x.*(x-1);
@@ -33,7 +33,7 @@ end
 
 %format short e
 % Parameters
-Num = 4; % Number of intervals
+Num = 1; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 
@@ -59,6 +59,8 @@ Mt = [h/3 h/6 0 0;h/6 h/3 0 0;0 0 0 0; 0 0 0 0];
 A = sparse(DoFs,DoFs);
 M = sparse(DoFs,DoFs); 
 b = sparse(DoFs,1);
+v = sparse(DoFs,1); 
+
 %b(2*Num+1)=[];
 r1 = sparse(DoFs,1); %robin BC
 %r1(2*Num+1)=[];
