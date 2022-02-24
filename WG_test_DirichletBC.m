@@ -2,7 +2,7 @@ clear all
 %format short e
 % Parameters
 % Define problem
-TestProblem = 1;
+TestProblem = 2;
 switch TestProblem
     case 1
         exactu = @(x)x.*x.*(x-1);
@@ -71,7 +71,7 @@ for i = 1:Num
      M = M + sparse(repmat(Index,4,1),repmat(Index',1,4),Mt,DoFs,DoFs);
 end
 
-nq = 7;
+nq = 2;
 [q,w] = lgwt(nq,-1,1);
 phi = [(1+q)'/2;(1-q)'/2];
 q = repmat(node(:,1:Num),nq,1)' + h/2 + h/2*repmat(q',Num,1);
@@ -89,17 +89,7 @@ u(end)=beta;
 u(free) = A(free,free)\RHS(free);  %solution with dirichlet boundary condition
 % u(bc) = [0; 0];
 % v = sparse(4,1); % 4 = number of basis functions in one interval
-for i = 1:Num
-    u_local = [u(2*i-1); u(2*i); u(2*Num+i); u(2*Num+i+1)];
-r = SS*u_local;
-v = RN*r;
-v(4) = h*(u(2*i-1)+u(2*i))/2;
 
-uhat = LN\v;
-Uhat(i,:) = uhat;
-end
-Uhat = Uhat';
-uhatfinal = Uhat(:);
 plot(node,u(2*Num+1:end),'*','LineWidth',2,'MarkerSize',10)% ub
 hold on
 plot([node(elem(:,1))',node(elem(:,2))']',[u(2:2:2*Num),u(1:2:2*Num)]','-','LineWidth',2);% u0 %made changes here: changed [u(1:2:2*Num),u(2:2:2*Num)]'to [u(2:2:2*Num),u(1:2:2*Num)]'
@@ -121,7 +111,41 @@ u0=u(1:2*Num);
 Qu(2*Num+1:DoFs)=exactu(node(1:end));
 errEn=sqrt((u-Qu)'*A*(u-Qu)); %energy norm need to check order of A , test N-2,4,8,16,32
 errL2=sqrt((u-Qu)'*M*(u-Qu));
-[errEn errL2]
+[errEn errL2];
 % plot(node,node.*(1-node)/2,'--','LineWidth',2)
 %%
 %lifting
+for i = 1:Num
+    u_local = [u(2*i-1); u(2*i); u(2*Num+i); u(2*Num+i+1)];
+r = SS*u_local;
+v = RN*r;
+v(4) = h*(u(2*i-1)+u(2*i))/2;
+
+uhat = LN\v;
+Uhat(i,:) = uhat;
+end
+Uhat = Uhat';
+uhatfinal = Uhat(:);
+for i = 1:Num
+    qn = 7;
+    [qi,wi] = lgwt(qn,node(i),node(i+1)); 
+    qi = (h*qi + node(i)+node(i+1))/2;
+    yi = @(x) (u(i+1)-u(i))*(x-node(i))/h +u(i);
+    yi = sqrt((exactu(qi) -yi(qi)).^2); 
+    yi = yi';
+    l2err(i) = (h*yi*wi)/2;
+    
+end
+ l2err = sum(l2err); 
+for i = 1:Num
+    qn = 7;
+    [qi,wi] = lgwt(qn,node(i),node(i+1)); 
+    qi = (h*qi + node(i)+node(i+1))/2;
+    yii = @(x) uhatfinal(4*i-3)+(x-node(i))*uhatfinal(4*i-2)/h+(x-node(i)).^2*uhatfinal(4*i-2)/(h^2)+(x-node(i)).^3*uhatfinal(4*i-2)/(h^3);
+    yii = sqrt((exactu(qi) -yii(qi)).^2);
+    yii = yii';
+    l2errh(i) = (h*yii*wi)/2;
+    
+end
+   l2errh = sum(l2errh);
+   [l2err   l2errh]
