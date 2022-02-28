@@ -126,26 +126,6 @@ Uhat(i,:) = uhat;
 end
 Uhat = Uhat';
 uhatfinal = Uhat(:);
-for i = 1:Num
-    qn = 7;
-    [qi,wi] = lgwt(qn,node(i),node(i+1)); 
-    qi = (h*qi + node(i)+node(i+1))/2;
-    yi = @(x) (u(i+1)-u(i))*(x-node(i))/h +u(i);
-    yi = sqrt((exactu(qi) -yi(qi)).^2); 
-    yi = yi';
-    l2err(i) = (h*yi*wi)/2;
-    
-end
- l2err = sum(l2err); 
-for i = 1:Num
-    qn = 7;
-    [qi,wi] = lgwt(qn,node(i),node(i+1)); 
-    qi = (h*qi + node(i)+node(i+1))/2;
-    yii = @(x) uhatfinal(4*i-3)+(x-node(i))*uhatfinal(4*i-2)/h+(x-node(i)).^2*uhatfinal(4*i-2)/(h^2)+(x-node(i)).^3*uhatfinal(4*i-2)/(h^3);
-    yii = sqrt((exactu(qi) -yii(qi)).^2);
-    yii = yii';
-    l2errh(i) = (h*yii*wi)/2;
-    
-end
-   l2errh = sum(l2errh);
-   [l2err   l2errh]
+MMt = [1 1/2 1/3 1/4; 1/2 1/3 1/4 1/5; 1/3 1/4 1/5 1/6; 1/4 1/5 1/6 1/7]; 
+
+MM = kron(eye(Num),MMt)

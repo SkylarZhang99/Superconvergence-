@@ -8,7 +8,7 @@ y = 0:h:1;
 [X,Y] = meshgrid(x,y);
 node (:,1) = X(:);
 node (:,2) = Y(:);
-node = full(node);
+%node = full(node);
 elem = sparse (2*Num^2,3);
 
 bc = (Num+1)*(1:Num)';
@@ -20,7 +20,7 @@ elem (1:Num^2,2) = n+Num+1;
 elem (1:Num^2,3) = n+Num+2; 
 elem (Num^2+1:end,2) = n+Num+2;    
 elem (Num^2+1:end,3) = n+1;          
-elem = full(elem);
+%elem = full(elem);
 
 x1 = node(1,1); y1 = node(1,2);
 x2 = node(2,1); y2 = node(2,2);
