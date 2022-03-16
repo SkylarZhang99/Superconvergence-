@@ -31,7 +31,7 @@ switch TestProblem
         beta = 3;
 end
 
-Num = 32; % Number of intervals
+Num = 2; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 
@@ -145,14 +145,14 @@ for i = 1:Num
     [qi,wi] = lgwt(qn,node(i),node(i+1)); 
     qi = (h*qi + node(i)+node(i+1))/2;
     yii = @(x) uhatfinal(4*i)+(x-node(i))*uhatfinal(4*i-1)/h+(x-node(i)).^2*uhatfinal(4*i-2)/(h^2)+(x-node(i)).^3*uhatfinal(4*i-3)/(h^3);
-    %yii = sqrt((exactu(qi) -yii(qi))^2); 
-    %yii = yii';
-    %l2errh(i) = (h*yii*wi)/2;
+    yiii = sqrt((exactu(qi) -yii(qi)).^2); 
+    yiii = yiii';
+    l2errh(i) = (h*yiii*wi)/2;
     xi = node(i):1/2^8:node(i+1);
     plot(xi,yii(xi));
     hold on   
 end
-   %l2errh = sum(l2errh);
+   l2errh = sum(l2errh)
    %[l2err   l2errh]
 %MMt = [1 1/2 1/3 1/4; 1/2 1/3 1/4 1/5; 1/3 1/4 1/5 1/6; 1/4 1/5 1/6 1/7]; 
 
