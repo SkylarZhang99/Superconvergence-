@@ -1,5 +1,5 @@
 clear all
-function [node, elem] = element(Num)
+function [node,elem] = ell(N)
 Num = 4; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
