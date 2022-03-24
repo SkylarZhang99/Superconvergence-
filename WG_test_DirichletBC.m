@@ -31,7 +31,7 @@ switch TestProblem
         beta = 3;
 end
 
-Num = 2; % Number of intervals
+Num = 4; % Number of intervals
 NO = Num+1; % Number of points
 h = 1/Num;
 
@@ -116,7 +116,7 @@ errL2=sqrt((u-Qu)'*M*(u-Qu));
 %%
 %lifting
 for i = 1:Num
-    u_local = [u(2*i); u(2*i-1); u(2*Num+i); u(2*Num+i+1)];
+    u_local = [u(2*i-1); u(2*i); u(2*Num+i); u(2*Num+i+1)];
 r = SS*u_local;
 %r1(1) = r(3);
 %r1(2) = r(2);
